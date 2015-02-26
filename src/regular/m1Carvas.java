@@ -19,7 +19,7 @@ public class m1Carvas extends Canvas implements ActionListener{
 	int x=250, y=250;
 	
 	public static Vector<Integer> fibArr = new Vector<Integer>(0);
-	public static Vector<Point2D> oPoint = new Vector<Point2D>(0);
+	public static Vector<Point2D> centerPoint = new Vector<Point2D>(0);
 	Point2D p;
 	
 	public m1Carvas(JTextField tf, JButton clear){
@@ -67,13 +67,17 @@ public class m1Carvas extends Canvas implements ActionListener{
 		
 	}
 	
-	public Point2D oP(int numTh){
-		if(oPoint.size() == 0){
+	public Point2D CP(int numTh){
+		int offsetOfCP = 0;
+		int offsetDirect = 0; // 1: right 2: up
+		if(centerPoint.size() == 0){
 			p.setLocation(250,250);
+			p.setLocation(250,250);	
 		}
 		else{
-			if(numTh > oPoint.size()){
-				oPoint.add();
+			if(numTh > centerPoint.size()){
+				offsetDirect = (numTh -2)%4 ;
+				centerPoint.add();
 			}
 		}
 		return null;
