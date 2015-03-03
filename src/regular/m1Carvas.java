@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -20,8 +21,11 @@ public class m1Carvas extends Canvas implements ActionListener{
 	int x=10, y=50;
 	
 	public static Vector<Integer> fibArr = new Vector<Integer>(0);
-	public static Vector<Point2D> centerPoint = new Vector<Point2D>();
-	Point2D p =null;
+	public static Vector<Point2D> centerPoint = new Vector<Point2D>(0);
+	public Point2D p =null;
+	
+	public static Vector<point> centerPoint2 = new Vector<point>(0);
+	point p2 = new point(200,200);
 	
 	public m1Carvas(JTextField tf, JButton clear){
 		
@@ -41,10 +45,23 @@ public class m1Carvas extends Canvas implements ActionListener{
 		g.setColor(Color.white);
 		for(int i=0 ; i<numTh ; i++){
 			r= fibo(i+1);
-			//g.drawArc((int) cp(i+1).getX(),(int) cp(i+1).getY(), r*20, r*20, 0+(i)*90, 90);
-			g.drawArc(x,y, r*20, r*20, 0+(i)*90, 90);
+			g.drawArc( cp2(i+1).getX(), cp2(i+1).getY(), r, r, 0+(i)*90, 90);
+			//g.drawArc(x,y, r*20, r*20, 0+(i)*90, 90);
 		}
-		
+		g.setColor(Color.green);
+		int xx=0;
+		//for(point i: centerPoint2){
+			//g.fillOval(i.getX(), i.getY(), 5, 5);
+			//g.drawString(Integer.toString(i.getX())+" "+ Integer.toString(i.getY()), 10+xx*80, 100);
+			//xx++;
+	//	}
+		Iterator iter ;
+		iter=centerPoint2.iterator();
+		while(iter.hasNext()){
+			
+				xx++;
+
+		}
 		g.setColor(Color.white);
 		for(int j = 0; j< numTh ; j++){
 			x+=100;
@@ -56,6 +73,48 @@ public class m1Carvas extends Canvas implements ActionListener{
 		}
 	}
 
+	   
+	public point cp2(int numTh){
+		int offsetOfCP = 0;
+		int offsetDirect = 4; // 0:down, 1: right, 2: up, 3:left, 
+		
+		if(centerPoint2.size() == 0){
+			//p.setLocation(200.0,200.0);
+			centerPoint2.add(p2);
+			centerPoint2.add(p2);
+			p2.setLocation(0, 0);
+		}
+		else if(numTh > centerPoint2.size())
+			for(int k = centerPoint2.size(); k <=numTh; k++){
+				offsetOfCP = fibo(k-1);
+				offsetDirect = (k - 1) % 4;
+				switch(offsetDirect){
+				case 0:{
+					p2.setLocation(cp2(k).getX(), cp2(k).getY()+offsetOfCP);
+					centerPoint2.add(p2);
+					break;
+				}
+				case 1:{
+					p2.setLocation(cp2(k).getX()+offsetOfCP, cp2(k).getY());
+					centerPoint2.add(p2);
+					break;
+				}
+				case 2:{
+					p2.setLocation(cp2(k).getX(), cp2(k).getY()-offsetOfCP);
+					centerPoint2.add(p2);
+					break;
+				}
+				case 3:{
+					p2.setLocation(cp2(k).getX()-offsetOfCP, cp2(k).getY());
+					centerPoint2.add(p2);
+					break;
+				}
+				p.setLocation(0,0);
+				}	
+			}	
+		return centerPoint2.elementAt(numTh-1);
+	}
+
 	public int fibo(int numTh) {
 		if(fibArr.size() == 0){
 			fibArr.add(1);
@@ -65,60 +124,21 @@ public class m1Carvas extends Canvas implements ActionListener{
 			for(int i = fibArr.size() ; i < numTh; i++){
 				fibArr.add(fibArr.lastElement() + fibArr.elementAt(fibArr.size()-2) );
 			}
-		return fibArr.elementAt(numTh-1);
+		return fibArr.elementAt(numTh-1)*20;
 	}
-	
-	public Point2D cp(int numTh){
-		int offsetOfCP = 0;
-		int offsetDirect = 4; // 0:down, 1: right, 2: up, 3:left, 
-		
-		if(centerPoint.size() == 0){
-			p.setLocation(200.0,200.0);
-			centerPoint.add(p);
-			centerPoint.add(p);
-		}
-		else if(numTh > centerPoint.size())
-			for(int k = centerPoint.size(); k < numTh; k++){
-				offsetOfCP = fibo(k);
-				offsetDirect = (k - 1) % 4;
-				switch(offsetDirect){
-				case 0:{
-					p.setLocation(cp(k).getX(), cp(k).getY()+offsetOfCP);
-					centerPoint.add(p);
-					break;
-				}
-				case 1:{
-					p.setLocation(cp(k).getX()+offsetOfCP, cp(k).getY());
-					centerPoint.add(p);
-					break;
-				}
-				case 2:{
-					p.setLocation(cp(k).getX(), cp(k).getY()-offsetOfCP);
-					centerPoint.add(p);
-					break;
-				}
-				case 3:{
-					p.setLocation(cp(k).getX()-offsetOfCP, cp(k).getY());
-					centerPoint.add(p);
-					break;
-				}
-				}
-				
-			}
-		
-		return centerPoint.elementAt(numTh-1);
-	}
+
 	
 	@Override
  	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == tf){
 			numTh = Integer.valueOf(tf.getText()) ;
-			for(int i = 0 ; i< numTh;i++)
-				System.out.println(cp(i));
 			
 		}
-		else numTh =0;
-		
+		else{ 
+			numTh =0;
+			x=10;
+			y=50;
+		}
 		repaint();	
 		
 	}
